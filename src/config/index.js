@@ -10,8 +10,6 @@ const { cast } = require('./cast');
 const defaultValue = {
   HOST: 'localhost',
   PORT: 3000,
-  FILE_PATH: '/files',
-
 }
 
 const config = {
@@ -20,7 +18,6 @@ const config = {
     version: packageJson.version,
     host: cast('HOST', 'string', defaultValue.HOST),
     port: cast('PORT', 'number', defaultValue.PORT),
-    filePath: cast('FILE_PATH', 'string', defaultValue.FILE_PATH),
   },
   secrets: {
     secretKey: cast('SECRET_KEY', 'string', '<FIXME>'),
@@ -29,14 +26,13 @@ const config = {
     refreshTokenExpiration: cast('ACCESS_TOKEN_EXPIRATION', 'string', '60d')
     */
   },
-  // db: {
-  //   host: cast('DB_HOST', 'string', 'localhost'),
-  //   port: cast('DB_PORT', 'number', 27017),
-  //   username: cast('DB_ID', 'string'),
-  //   password: cast('DB_PW', 'string'),
-  //   database: cast('DB_DATABASE', 'string'),
-  //   poolSize: cast('DB_POOLSIZE', 'number', 5),
-  // }
+  gov: {
+    apiKey: cast('GOV_API_KEY', 'string'),
+  },
+  notion: {
+    apiKey: cast('NOTION_API_KEY', 'string'),
+    databaseId: cast('NOTION_TARGET_DB_ID', 'string'),
+  }
 };
 
 module.exports = config;

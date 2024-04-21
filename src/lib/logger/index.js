@@ -42,10 +42,6 @@ function init(options) {
         winstonLogger.log('info', sprintf('서버 실행 주소: %s', servAddr));
         winstonLogger.log('info', sprintf('서버 실행 모드: %s', process.env.NODE_ENV));
         console.log('======================================================================================================================================================================================================');
-        if (process.env.NODE_ENV === 'dev') {
-            winstonLogger.log('info', '[데이터베이스 정보]');
-            winstonLogger.log('info', JSON.stringify(config.db));
-        }
     };
 
     /**
