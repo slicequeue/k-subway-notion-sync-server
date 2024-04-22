@@ -4,8 +4,6 @@ const metroApi = require('../gov/metro');
 const notionService = require('../notion/service');
 const { stationTimetableItemMapper } = require('./mapper');
 
-const { DailyTypeCode, UpDownTypeCode } = metroApi.codes;
-
 const defaultStationId = 'MTRKR10142'; // 구일역
 const defaultDailyCode = metroApi.codes.DailyTypeCode.WEEKDAY;
 const defaultUpDownCode = metroApi.codes.UpDownTypeCode.UP;

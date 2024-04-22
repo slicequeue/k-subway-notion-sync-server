@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const { body, validationResult } = require('express-validator');
+const { validationResult } = require('express-validator');
 
 const logger = require('../../lib/logger');
 const SubwayNotionSyncRequest = require('../../dto/SubwayNotionSyncRequest');
