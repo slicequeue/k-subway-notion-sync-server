@@ -1,6 +1,6 @@
 {
-  "name": "node-server-boilerplate",
-  "version": "0.0.0",
+  "name": "seoul-subway-notion-db-sync-server",
+  "version": "0.0.2",
   "private": true,
   "scripts": {
     "start": "node ./bin/www"
