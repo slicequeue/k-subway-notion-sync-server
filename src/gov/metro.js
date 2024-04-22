@@ -103,9 +103,7 @@ const getStationTimetableItems = async (
   if (!res.response || !res.response.header || !res.response.header.resultCode || res.response.header.resultCode != '00') {
     throw Error(`gov metro api error: ${res.body}`);
   }
-
   let stationTimeTableItems = res.response.body.items.item.map(each => new StationTimeTableItem(each));
-
   if (filterNonStops) {
     stationTimeTableItems = stationTimeTableItems.filter(each => each.arrTime != '0');
   }
@@ -121,18 +119,3 @@ module.exports = {
     UpDownTypeCode,
   }
 }
-
-
-// const main = async () => {
-//   const resSubwayList = await getSubwayList('구일');
-//   console.log('resSubwayList:', resSubwayList);
-
-//   console.log('---');
-
-//   const filteredStationTimeTableList = await getStationTimetableItems('MTRKR10142', DailyTypeCode.WEEKDAY, UpDownTypeCode.UP, 1, 400);
-
-//   // 정차하지 않는 경우 
-//   console.log('resStationTimeTable:', filteredStationTimeTableList);
-// }
-
-// main().catch(console.error);

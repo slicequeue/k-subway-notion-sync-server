@@ -57,7 +57,7 @@ async function createDatabaseAllPages({databaseId = defaultDatabaseId, dataList,
   let pagePropertiesList = typeof(mapper) === 'function' ? dataList.map(each => mapper(each)) : dataList;
 
   const pageCreationPromises = pagePropertiesList.map(pageData => {
-    return createDatabasePage({databaseId, properties: pageData})
+    return createDatabasePage({databaseId, properties: pageData});
   });
 
   const res = await Promise.all(pageCreationPromises);
