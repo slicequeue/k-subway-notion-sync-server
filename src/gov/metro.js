@@ -116,6 +116,10 @@ const getStationTimetableItems = async (
 module.exports = {
   getSubwayList,
   getStationTimetableItems,
+  codes: {
+    DailyTypeCode, 
+    UpDownTypeCode,
+  }
 }
 
 
