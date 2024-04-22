@@ -8,6 +8,7 @@ const mdeIpGrabber = require('../lib/ip-grabber');
 const logger = require('../lib/logger');
 
 const syncs = require('./syncs');
+const stations = require('./stations');
 
 /* Test */
 router.use('/test', mdeIpGrabber, require('./test'));
@@ -18,6 +19,6 @@ router.get('/', mdeIpGrabber, function (req, res, next) {
 });
 
 router.use('/syncs', syncs);
-
+router.use('/stations', stations);
 
 module.exports = router;

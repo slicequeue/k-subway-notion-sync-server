@@ -16,7 +16,7 @@ const convertUpDownTypeCode = (upDownTypeCode) => {
   switch (upDownTypeCode) {
     case 'U': //, 'u':
       return '상행';
-    case 'D', 'd':
+    case 'D':
       return '하행';
     default:
       throw new Error(`convertUpDownTypeCode 없는 형식: ${upDownTypeCode}`)
@@ -27,6 +27,7 @@ const convertHHMMSS = (plainTimeValue) => {
   let strValue = typeof (plainTimeValue) === 'string' ? plainTimeValue : String(plainTimeValue);
 
   if (strValue.length !== 6) {
+    console.error('strValue:', strValue);
     throw new Error("잘못된 시간 형식입니다. 6자리 문자열이 필요합니다.");
   }
 
@@ -55,7 +56,7 @@ const stationTimetableItemMapper = {
     } = stationTimetableItem;
 
     return {
-      "구일역도착시간(HH:MM:SS)": {
+      "역도착시간(HH:MM:SS)": {
         title: [
           {
             text: {
@@ -64,11 +65,11 @@ const stationTimetableItemMapper = {
           },
         ],
       },
-      "구일역출발시간(HH:MM:SS)": {
+      "역출발시간(HH:MM:SS)": {
         rich_text: [
           {
             text: {
-              content: convertHHMMSS(depTime),
+              content: (depTime != '0' && depTime.length == 6) ? convertHHMMSS(depTime) : String(depTime),
             },
           },
         ],

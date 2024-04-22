@@ -31,6 +31,14 @@ const UpDownTypeCode = {
 
 const API_URL = 'http://apis.data.go.kr/1613000/SubwayInfoService';
 
+const checkResponse = (res) => {
+  const data = res.data;
+  if (!data.response || !data.response.header || !data.response.header.resultCode || data.response.header.resultCode != '00') {
+    throw Error(`gov metro api error: ${data.body}`);
+  }
+  return data.response.body;
+}
+
 const axios = Axios.create({
   baseURL: API_URL,
   params: {
@@ -40,13 +48,15 @@ const axios = Axios.create({
 });
 
 const getSubwayList = async (subwayStationName, pageNo = 1, numOfRows = 10) => {
-  return axios.get('/getKwrdFndSubwaySttnList', {
+  const res = await axios.get('/getKwrdFndSubwaySttnList', {
     params: {
       subwayStationName,
       pageNo,
       numOfRows,
     }
   });
+  const body = checkResponse(res);
+  return body.items.item ? body.items.item : [];
 }
 
 class StationTimeTableItem {

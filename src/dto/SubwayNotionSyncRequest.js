@@ -29,8 +29,6 @@ class NotionRequest {
   }
 }
 
-
-
 module.exports = class SubwayNotionSyncRequest {
   constructor({
     subway,
