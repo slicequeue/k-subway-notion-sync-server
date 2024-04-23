@@ -23,7 +23,9 @@ async function syncSubwayTimetableToNotion(
   upDownCode = defaultUpDownCode,
   notionDatabaseId = defaultNotionDatabseId,
 ) {
-  const stationTimeTableItems = await metroApi.getStationTimetableItems(
+  const {
+    data: stationTimeTableItems
+  } = await metroApi.getStationTimetable(
     stationId, dailyCode, upDownCode, 1, 400, true
   );
 

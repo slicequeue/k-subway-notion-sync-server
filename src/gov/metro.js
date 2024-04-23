@@ -1,6 +1,10 @@
 const Axios = require('axios');
 
 const config = require('../config/index');
+const StationTimeTableItem = require('../dto/StationTimeTableItem');
+const StationTimeTableResponse = require('../dto/StationTimeTableResponse');
+const SearchSubwayStationResponse = require('../dto/SearchSubwayStationResponse');
+const SearchSubwayStationItem = require('../dto/SearchSubwayStationItem');
 
 const DataType = {
   XML: 'xml',
@@ -24,14 +28,14 @@ const DailyTypeCode = {
  */
 const UpDownTypeCode = {
   /** 상행 - 서울방향 */
-  UP: 'U', 
+  UP: 'U',
   /** 하행 - 서울반대방향 */
   DOWN: 'D',
 }
 
 const API_URL = 'http://apis.data.go.kr/1613000/SubwayInfoService';
 
-const checkResponse = (res) => {
+const extractResponseBody = (res) => {
   const data = res.data;
   if (!data.response || !data.response.header || !data.response.header.resultCode || data.response.header.resultCode != '00') {
     throw Error(`gov metro api error: ${data.body}`);
@@ -47,7 +51,33 @@ const axios = Axios.create({
   }
 });
 
-const getSubwayList = async (subwayStationName, pageNo = 1, numOfRows = 10) => {
+const extractItemArrayOrDefualtEmptyArray = (body) => {
+  let result = [];
+  if (body && body.items) {
+    if (!Array.isArray(body.items.item)) {
+      result = [body.items.item];
+    } else {
+      result = body.items.item;
+    }
+  }
+  return result;
+}
+
+const extractPagingInfoOrDefaultEmptyObject = (body, appendObject = {}) => {
+  let paging = {
+    numOfRows: Number(body.numOfRows),
+    pageNo: body.pageNo,
+    totalCount: body.totalCount,
+  }
+
+  Object.keys(appendObject).forEach(key => {
+    paging[key] = appendObject[key];
+  });
+
+  return paging;
+}
+
+async function getSubwayList(subwayStationName, pageNo = 1, numOfRows = 10) {
   const res = await axios.get('/getKwrdFndSubwaySttnList', {
     params: {
       subwayStationName,
@@ -55,32 +85,10 @@ const getSubwayList = async (subwayStationName, pageNo = 1, numOfRows = 10) => {
       numOfRows,
     }
   });
-  const body = checkResponse(res);
-  return body.items.item ? body.items.item : [];
-}
-
-class StationTimeTableItem {
-  constructor({
-    arrTime,
-    dailyTypeCode,
-    depTime,
-    endSubwayStationId,
-    endSubwayStationNm,
-    subwayRouteId,
-    subwayStationId,
-    subwayStationNm,
-    upDownTypeCode,
-  }) {
-    this.arrTime = arrTime;
-    this.dailyTypeCode = dailyTypeCode;
-    this.depTime = depTime;
-    this.endSubwayStationId = endSubwayStationId;
-    this.endSubwayStationNm = endSubwayStationNm;
-    this.subwayRouteId = subwayRouteId;
-    this.subwayStationId = subwayStationId;
-    this.subwayStationNm = subwayStationNm;
-    this.upDownTypeCode = upDownTypeCode;
-  }
+  const body = extractResponseBody(res);
+  const data = extractItemArrayOrDefualtEmptyArray(body).map(each => new SearchSubwayStationItem(each));
+  const paging = extractPagingInfoOrDefaultEmptyObject(body);
+  return new SearchSubwayStationResponse({data, paging});
 }
 
 /**
@@ -90,16 +98,18 @@ class StationTimeTableItem {
  * @param {string} upDownTypeCode *상하행구분코드 - UpDownTypeCode
  * @param {integer} pageNo 한 페이지 결과 수
  * @param {integer} numOfRows 페이지 번호
+ * @param {boolean} filterNonArrive 정차하지 않는 정보 필터링 여부
  * @returns 
  */
-const getStationTimetableItems = async (
-  subwayStationId, 
-  dailyTypeCode, 
-  upDownTypeCode, 
-  pageNo = 1, 
+async function getStationTimetable(
+  subwayStationId,
+  dailyTypeCode,
+  upDownTypeCode,
+  pageNo = 1,
   numOfRows = 10,
-  filterNonStops = true,
-) => {
+  filterNonArrive = true,
+) {
+
   let res = (await axios.get('/getSubwaySttnAcctoSchdulList', {
     params: {
       subwayStationId,
@@ -108,24 +118,32 @@ const getStationTimetableItems = async (
       pageNo,
       numOfRows,
     }
-  })).data;
+  }));
 
-  if (!res.response || !res.response.header || !res.response.header.resultCode || res.response.header.resultCode != '00') {
-    throw Error(`gov metro api error: ${res.body}`);
-  }
-  let stationTimeTableItems = res.response.body.items.item.map(each => new StationTimeTableItem(each));
-  if (filterNonStops) {
-    stationTimeTableItems = stationTimeTableItems.filter(each => each.arrTime != '0');
+  const body = extractResponseBody(res);
+  let data = extractItemArrayOrDefualtEmptyArray(body)
+    .map(each => new StationTimeTableItem(each));
+
+  let filteredCount = 0;
+  if (filterNonArrive) {
+    data = data.filter(each => each.arrTime != '0');
+    filteredCount = data.length;
   }
 
-  return stationTimeTableItems;
+  const paging = extractPagingInfoOrDefaultEmptyObject(body, {
+    numOfRows,
+    filteredNumOfRows: numOfRows - filteredCount,
+    filterNonArrive,
+  });
+
+  return new StationTimeTableResponse({ data, paging });
 }
- 
+
 module.exports = {
   getSubwayList,
-  getStationTimetableItems,
+  getStationTimetable,
   codes: {
-    DailyTypeCode, 
+    DailyTypeCode,
     UpDownTypeCode,
   }
 }
