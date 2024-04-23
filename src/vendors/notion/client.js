@@ -1,6 +1,6 @@
 const { Client, APIErrorCode  } = require('@notionhq/client');
 
-const config = require('../config');
+const config = require('../../config');
 
 const notion = new Client({
     auth: config.notion.apiKey,
@@ -8,4 +8,5 @@ const notion = new Client({
 
 module.exports = {
   notion,
+  APIErrorCode,
 }

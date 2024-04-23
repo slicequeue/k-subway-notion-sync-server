@@ -1,7 +1,7 @@
-const SearchSubwayStationItem = require('../../dto/SearchSubwayStationItem');
-const SearchSubwayStationResponse = require('../../dto/SearchSubwayStationResponse');
-const StationTimeTableItem = require('../../dto/StationTimeTableItem');
-const StationTimeTableResponse = require('../../dto/StationTimeTableResponse');
+const SearchSubwayStationItem = require('./dtos/SearchSubwayStationItem');
+const SearchSubwayStationResponse = require('./dtos/SearchSubwayStationResponse');
+const StationTimeTableItem = require('./dtos/StationTimeTableItem');
+const StationTimeTableResponse = require('./dtos/StationTimeTableResponse');
 const metroApi = require('./api');
 
 const extractItemArrayOrDefualtEmptyArray = (body) => {

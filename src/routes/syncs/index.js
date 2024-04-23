@@ -4,8 +4,8 @@ const router = express.Router();
 const { validationResult } = require('express-validator');
 
 const logger = require('../../lib/logger');
-const SubwayNotionSyncRequest = require('../../dto/SubwayNotionSyncRequest');
-const { subwayNotionSyncService } = require('../../service');
+const SubwayNotionSyncRequest = require('../../vendors/gov/metro/dtos/SubwayNotionSyncRequest');
+const { subwayNotionSyncService } = require('../../sync/service');
 
 router.post('/station-times-to-notion', SubwayNotionSyncRequest.validate(), async (req, res) => {
   const errors = validationResult(req);
