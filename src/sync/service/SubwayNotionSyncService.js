@@ -1,8 +1,8 @@
 
-const config = require('../config');
-const metroApi = require('../gov/metro/api');
-const metroService = require('../gov/metro/service');
-const notionService = require('../notion/service');
+const config = require('../../config');
+const metroApi = require('../../vendors/gov/metro/api');
+const metroService = require('../../vendors/gov/metro/service');
+const notionService = require('../../vendors/notion/service');
 const { stationTimetableItemMapper } = require('./mapper');
 
 const defaultStationId = 'MTRKR10142'; // 구일역

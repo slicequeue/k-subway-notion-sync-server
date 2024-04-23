@@ -1,10 +1,6 @@
 const Axios = require('axios');
 
-const config = require('../../config/index');
-const StationTimeTableItem = require('../../dto/StationTimeTableItem');
-const StationTimeTableResponse = require('../../dto/StationTimeTableResponse');
-const SearchSubwayStationResponse = require('../../dto/SearchSubwayStationResponse');
-const SearchSubwayStationItem = require('../../dto/SearchSubwayStationItem');
+const config = require('../../../config/index');
 
 const DataType = {
   XML: 'xml',
@@ -50,32 +46,6 @@ const axios = Axios.create({
     _type: DataType.JSON,
   }
 });
-
-const extractItemArrayOrDefualtEmptyArray = (body) => {
-  let result = [];
-  if (body && body.items) {
-    if (!Array.isArray(body.items.item)) {
-      result = [body.items.item];
-    } else {
-      result = body.items.item;
-    }
-  }
-  return result;
-}
-
-const extractPagingInfoOrDefaultEmptyObject = (body, appendObject = {}) => {
-  let paging = {
-    numOfRows: Number(body.numOfRows),
-    pageNo: body.pageNo,
-    totalCount: body.totalCount,
-  }
-
-  Object.keys(appendObject).forEach(key => {
-    paging[key] = appendObject[key];
-  });
-
-  return paging;
-}
 
 async function getSubwayList(subwayStationName, pageNo = 1, numOfRows = 10) {
   const res = await axios.get('/getKwrdFndSubwaySttnList', {

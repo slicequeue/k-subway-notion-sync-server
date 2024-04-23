@@ -1,9 +1,9 @@
 const express = require('express');
 const { query, param, validationResult } = require('express-validator');
 
-const metroApi = require('../../gov/metro/api');
+const metroApi = require('../../vendors/gov/metro/api');
 const { DailyTypeCode, UpDownTypeCode } = metroApi.codes;
-const metroService = require('../../gov/metro/service');
+const metroService = require('../../vendors/gov/metro/service');
 const router = express.Router();
 
 router.get('', [query('nameKeyWord').isString().isLength(1)], async (req, res) => {
