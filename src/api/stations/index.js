@@ -1,8 +1,9 @@
 const express = require('express');
 const { query, param, validationResult } = require('express-validator');
 
-const metroApi = require('../../gov/metro');
+const metroApi = require('../../gov/metro/api');
 const { DailyTypeCode, UpDownTypeCode } = metroApi.codes;
+const metroService = require('../../gov/metro/service');
 const router = express.Router();
 
 router.get('', [query('nameKeyWord').isString().isLength(1)], async (req, res) => {
@@ -10,7 +11,7 @@ router.get('', [query('nameKeyWord').isString().isLength(1)], async (req, res) =
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
-  const results = (await metroApi.getSubwayList(req.query.nameKeyWord))
+  const results = (await metroService.getSubwayList(req.query.nameKeyWord))
   return res.json(results);
 });
 
@@ -42,7 +43,7 @@ router.get('/:stationId', [
     filterNonArrive,
   } = req.query;
 
-  const results = await metroApi.getStationTimetable(
+  const results = await metroService.getStationTimetable(
     stationId, 
     DailyTypeCode[dailyTypeCodeKey], 
     UpDownTypeCode[upDownTypeCodeKey], 

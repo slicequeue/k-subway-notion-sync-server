@@ -1,10 +1,10 @@
 const Axios = require('axios');
 
-const config = require('../config/index');
-const StationTimeTableItem = require('../dto/StationTimeTableItem');
-const StationTimeTableResponse = require('../dto/StationTimeTableResponse');
-const SearchSubwayStationResponse = require('../dto/SearchSubwayStationResponse');
-const SearchSubwayStationItem = require('../dto/SearchSubwayStationItem');
+const config = require('../../config/index');
+const StationTimeTableItem = require('../../dto/StationTimeTableItem');
+const StationTimeTableResponse = require('../../dto/StationTimeTableResponse');
+const SearchSubwayStationResponse = require('../../dto/SearchSubwayStationResponse');
+const SearchSubwayStationItem = require('../../dto/SearchSubwayStationItem');
 
 const DataType = {
   XML: 'xml',
@@ -85,10 +85,7 @@ async function getSubwayList(subwayStationName, pageNo = 1, numOfRows = 10) {
       numOfRows,
     }
   });
-  const body = extractResponseBody(res);
-  const data = extractItemArrayOrDefualtEmptyArray(body).map(each => new SearchSubwayStationItem(each));
-  const paging = extractPagingInfoOrDefaultEmptyObject(body);
-  return new SearchSubwayStationResponse({data, paging});
+  return extractResponseBody(res);
 }
 
 /**
@@ -107,7 +104,6 @@ async function getStationTimetable(
   upDownTypeCode,
   pageNo = 1,
   numOfRows = 10,
-  filterNonArrive = true,
 ) {
 
   let res = (await axios.get('/getSubwaySttnAcctoSchdulList', {
@@ -120,23 +116,7 @@ async function getStationTimetable(
     }
   }));
 
-  const body = extractResponseBody(res);
-  let data = extractItemArrayOrDefualtEmptyArray(body)
-    .map(each => new StationTimeTableItem(each));
-
-  let filteredCount = 0;
-  if (filterNonArrive) {
-    data = data.filter(each => each.arrTime != '0');
-    filteredCount = data.length;
-  }
-
-  const paging = extractPagingInfoOrDefaultEmptyObject(body, {
-    numOfRows,
-    filteredNumOfRows: numOfRows - filteredCount,
-    filterNonArrive,
-  });
-
-  return new StationTimeTableResponse({ data, paging });
+  return extractResponseBody(res);
 }
 
 module.exports = {

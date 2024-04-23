@@ -1,6 +1,7 @@
 
 const config = require('../config');
-const metroApi = require('../gov/metro');
+const metroApi = require('../gov/metro/api');
+const metroService = require('../gov/metro/service');
 const notionService = require('../notion/service');
 const { stationTimetableItemMapper } = require('./mapper');
 
@@ -25,7 +26,7 @@ async function syncSubwayTimetableToNotion(
 ) {
   const {
     data: stationTimeTableItems
-  } = await metroApi.getStationTimetable(
+  } = await metroService.getStationTimetable(
     stationId, dailyCode, upDownCode, 1, 400, true
   );
 

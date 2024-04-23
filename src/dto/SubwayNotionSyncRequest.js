@@ -1,5 +1,5 @@
 const { body } = require("express-validator");
-const { DailyTypeCode, UpDownTypeCode } = require('../gov/metro').codes;
+const { DailyTypeCode, UpDownTypeCode } = require('../gov/metro/api').codes;
 
 class SubwayRequest {
   constructor({stationId, dailyCode, upDownCode}) {
