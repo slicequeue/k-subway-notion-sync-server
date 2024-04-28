@@ -5,7 +5,7 @@
  */
 const sprintf = require('sprintf-js').sprintf;
 const config = require('../src/config');
-const logger = require('../src/lib/logger');
+const logger = require('../src/common/lib/logger');
 
 var app = require('../app');
 var debug = require('debug')(`${config.basic.name}:server`);

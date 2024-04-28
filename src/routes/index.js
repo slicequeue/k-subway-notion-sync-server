@@ -4,14 +4,11 @@ const config = require('../config');
 var express = require('express');
 var router = express.Router();
 
-const mdeIpGrabber = require('../lib/ip-grabber');
-const logger = require('../lib/logger');
+const mdeIpGrabber = require('../common/lib/ip-grabber');
+const logger = require('../common/lib/logger');
 
 const syncs = require('./syncs');
 const stations = require('./stations');
-
-/* Test */
-router.use('/test', mdeIpGrabber, require('./test'));
 
 router.get('/', mdeIpGrabber, function (req, res, next) {
     logger.log('info', req, '연결 테스트 수행');
