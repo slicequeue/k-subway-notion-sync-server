@@ -3,7 +3,7 @@ const router = express.Router();
 
 const { validationResult } = require('express-validator');
 
-const logger = require('../../common/lib/logger');
+const logger = require('../../common/utils/logger');
 const SubwayNotionSyncRequest = require('../../vendors/gov/metro/dtos/SubwayNotionSyncRequest');
 const { subwayNotionSyncService } = require('../../sync/service');
 

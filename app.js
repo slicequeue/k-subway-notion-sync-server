@@ -8,7 +8,7 @@ var logger = require('morgan');
 
 var apiRouter = require('./src/routes');
 
-const cLogger = require('./src/common/lib/logger');
+const cLogger = require('./src/common/utils/logger');
 
 var app = express();
 
