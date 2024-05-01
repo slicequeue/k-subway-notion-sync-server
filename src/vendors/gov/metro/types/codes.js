@@ -1,9 +1,4 @@
 
-const DataType = Object.freeze({
-  XML: 'xml',
-  JSON: 'json',
-});
-
 /**
  * 요일구분코드
  */
@@ -27,7 +22,6 @@ const UpDownTypeCode = Object.freeze({
 });
 
 module.exports = {
-  DataType,
   DailyTypeCode,
   UpDownTypeCode,
 }

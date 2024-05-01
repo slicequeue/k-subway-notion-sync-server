@@ -1,11 +1,11 @@
 
 const convertDailyTypeCode = (dailyTypeCode) => {
   switch (dailyTypeCode) {
-    case '01':
+    case '01', 'WEEKDAY':
       return '평일';
-    case '02':
+    case '02', 'SATURDAY':
       return '토요일';
-    case '03':
+    case '03', 'SUNDAY':
       return '공휴일';
     default:
       throw new Error(`convertDailyTypeCode 없는 형식: ${dailyTypeCode}`);
@@ -14,9 +14,9 @@ const convertDailyTypeCode = (dailyTypeCode) => {
 
 const convertUpDownTypeCode = (upDownTypeCode) => {
   switch (upDownTypeCode) {
-    case 'U': //, 'u':
+    case 'U', 'UP': //, 'u':
       return '상행';
-    case 'D':
+    case 'D', 'DOWN':
       return '하행';
     default:
       throw new Error(`convertUpDownTypeCode 없는 형식: ${upDownTypeCode}`)
