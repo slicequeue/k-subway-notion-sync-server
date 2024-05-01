@@ -49,7 +49,7 @@
 ![image](https://github.com/slicequeue/k-subway-notion-sync-server/assets/75685750/f1da4a14-e5ce-45cd-ba43-8a93fcea13aa)
 ![k-subway-notion-sync-server-ex1-편집본](https://github.com/slicequeue/k-subway-notion-sync-server/assets/75685750/09eba6f9-a322-4bbb-bf26-9c1a76089c22)
 - 한국 지하철 노선 도착 정보 `국토교통부_(TAGO)_지하철정보` API 를 활용하여 NOTION 데이터베이스에 동기화 처리를 통해 대상 데이터베이스에 도착 정보를 반영할 수 있음
-
+- 사용하고자 하는 곳에서 대상 노션 데이터베이스 기준으로 원하는 조건으로 필터링 정렬 등을 적용하거나 이를 통한 뷰를 만들어 원하는 페이지에서 활용하면됨
 
 ## Installation
 
