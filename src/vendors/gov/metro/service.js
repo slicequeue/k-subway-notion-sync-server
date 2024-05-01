@@ -3,6 +3,10 @@ const SearchSubwayStationResponse = require('./dtos/SearchSubwayStationResponse'
 const StationTimeTableItem = require('./dtos/StationTimeTableItem');
 const StationTimeTableResponse = require('./dtos/StationTimeTableResponse');
 const metroApi = require('./api');
+const { getKeyByValue } = require('../../../common/utils/objectUtil');
+const { tic, toc, sleep } = require('../../../common/utils/timeUtil');
+const { DailyTypeCode, UpDownTypeCode } = require('./types/codes');
+const { getCodeValues, getCodeKeyByValue } = require('./types/utils');
 
 const extractItemArrayOrDefualtEmptyArray = (body) => {
   let result = [];
@@ -39,14 +43,18 @@ async function getSubwayList(subwayStationName, pageNo, numOfRows) {
 
 async function getStationTimetable(
   subwayStationId,
-  dailyTypeCode,
-  upDownTypeCode,
+  dailyTypeCodeValue,
+  upDownTypeCodeValue,
   pageNo = 1,
   numOfRows = 10,
   filterNonArrive = true,
 ) {
-  const body = await metroApi.getStationTimetable(subwayStationId, dailyTypeCode, upDownTypeCode, pageNo, numOfRows);
-  let data = extractItemArrayOrDefualtEmptyArray(body).map(each => new StationTimeTableItem(each));
+  const body = await metroApi.getStationTimetable(subwayStationId, dailyTypeCodeValue, upDownTypeCodeValue, pageNo, numOfRows);
+  let data = extractItemArrayOrDefualtEmptyArray(body).map(each => {
+    each.dailyTypeCode = getKeyByValue(DailyTypeCode, each.dailyTypeCode);
+    each.upDownTypeCode = getKeyByValue(UpDownTypeCode, each.upDownTypeCode);
+    return each;
+  }).map(each => new StationTimeTableItem(each));
 
   let filteredCount = 0;
   if (filterNonArrive) {
@@ -59,12 +67,56 @@ async function getStationTimetable(
     filteredNumOfRows: numOfRows - filteredCount,
     filterNonArrive,
   });
-  return new StationTimeTableResponse({ data, paging });
+  return new StationTimeTableResponse({ 
+    dailyTypeCode: getCodeKeyByValue(DailyTypeCode, dailyTypeCodeValue),
+    upDownTypeCode: getCodeKeyByValue(UpDownTypeCode, upDownTypeCodeValue),
+    data, 
+    paging 
+  });
 }
 
+const generateCombinations = (arrays, index = 0) => {
+  if (index === arrays.length) {
+    return ['']; // 조합의 종료점
+  }
 
+  const result = [];
+  const nextCombinations = generateCombinations(arrays, index + 1);
+
+  for (const item of arrays[index]) {
+    for (const combination of nextCombinations) {
+      result.push([item, ...combination]);
+    }
+  }
+
+  return result;
+}
+
+async function getStationAllArgsTimetable(
+  subwayStationId,
+  pageNo = 1,
+  numOfRows = 400,
+  filterNonArrive = true,
+  untilDelayMsec = 1000
+) {
+  const dailyTypeCodes  = getCodeValues(DailyTypeCode);
+  const upDownTypeCodes = getCodeValues(UpDownTypeCode);
+
+  const allArgs = generateCombinations([dailyTypeCodes, upDownTypeCodes]);
+  const results = [];
+  for (let args of allArgs) {
+    const msec = tic();
+    results.push(await getStationTimetable(subwayStationId, args[0], args[1], pageNo, numOfRows, filterNonArrive))
+    const gap = toc(msec);
+    if (gap < untilDelayMsec) {
+      await sleep(untilDelayMsec - gap);
+    }
+  }
+  return results;
+}
 
 module.exports = {
   getSubwayList,
-  getStationTimetable
+  getStationTimetable,
+  getStationAllArgsTimetable,
 }

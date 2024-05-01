@@ -1,5 +1,6 @@
 const { body } = require("express-validator");
-const { DailyTypeCode, UpDownTypeCode } = require('../api').codes;
+const { DailyTypeCode, UpDownTypeCode } = require("../types/codes");
+const { getCodeKeys } = require("../types/utils");
 
 class SubwayRequest {
   constructor({stationId, dailyCode, upDownCode}) {
@@ -11,8 +12,14 @@ class SubwayRequest {
   static validate() {
     return [
       body('subway.stationId').isString(),
-      body('subway.dailyCode').isString().isIn(Object.keys(DailyTypeCode)),
-      body('subway.upDownCode').isString().isIn(Object.keys(UpDownTypeCode)),
+      body('subway.dailyCode').isString().isIn(getCodeKeys(DailyTypeCode)),
+      body('subway.upDownCode').isString().isIn(getCodeKeys(UpDownTypeCode)),
+    ]
+  }
+
+  static validateEssential() {
+    return [
+      body('subway.stationId').isString(),
     ]
   }
 }
@@ -42,6 +49,15 @@ module.exports = class SubwayNotionSyncRequest {
     return [
       body('subway').isObject(),
       ...SubwayRequest.validate(),
+      body('notion').isObject(),
+      ...NotionRequest.validate()
+    ]
+  }
+
+  static validateEssential() {
+    return [
+      body('subway').isObject(),
+      ...SubwayRequest.validateEssential(),
       body('notion').isObject(),
       ...NotionRequest.validate()
     ]

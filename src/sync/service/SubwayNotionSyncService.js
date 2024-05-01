@@ -1,13 +1,13 @@
 
 const config = require('../../config');
-const metroApi = require('../../vendors/gov/metro/api');
 const metroService = require('../../vendors/gov/metro/service');
+const { DailyTypeCode, UpDownTypeCode } = require('../../vendors/gov/metro/types/codes');
 const notionService = require('../../vendors/notion/service');
 const { stationTimetableItemMapper } = require('./mapper');
 
 const defaultStationId = 'MTRKR10142'; // 구일역
-const defaultDailyCode = metroApi.codes.DailyTypeCode.WEEKDAY;
-const defaultUpDownCode = metroApi.codes.UpDownTypeCode.UP;
+const defaultDailyCode = DailyTypeCode.WEEKDAY;
+const defaultUpDownCode = UpDownTypeCode.UP;
 const defaultNotionDatabseId = config.notion.databaseId;
 
 
@@ -18,7 +18,7 @@ const defaultNotionDatabseId = config.notion.databaseId;
  * @param {string} upDownCodeKey 상행/하행 코드 - metroApi.codes.UpDownTypeCode
  * @param {string} notionDatabaseId 노션 데이터베이스 아이디
  */
-async function syncSubwayTimetableToNotion(
+async function syncStationTimetableToNotion(
   stationId = defaultStationId, 
   dailyCode = defaultDailyCode,
   upDownCode = defaultUpDownCode,
@@ -34,6 +34,18 @@ async function syncSubwayTimetableToNotion(
   await notionService.createDatabaseAllPages({databaseId: notionDatabaseId, dataList: stationTimeTableItems, mapper: stationTimetableItemMapper.toNotionProperties })
 }
 
+async function syncStationAllTimetableToNotion(
+  stationId = defaultStationId, 
+  notionDatabaseId = defaultNotionDatabseId,
+) {
+  const stationTimeTableItems = (await metroService.getStationAllArgsTimetable(
+    stationId, 1, 400, true
+  )).flatMap(each => each.data); 
+  await notionService.clearDatabaseAllPages(notionDatabaseId);
+  await notionService.createDatabaseAllPages({databaseId: notionDatabaseId, dataList: stationTimeTableItems, mapper: stationTimetableItemMapper.toNotionProperties })
+}
+
 module.exports = {
-  syncSubwayTimetableToNotion,
+  syncStationTimetableToNotion,
+  syncStationAllTimetableToNotion,
 }

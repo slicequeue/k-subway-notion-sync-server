@@ -1,33 +1,7 @@
 const Axios = require('axios');
 
 const config = require('../../../config/index');
-
-const DataType = {
-  XML: 'xml',
-  JSON: 'json',
-}
-
-/**
- * 요일구분코드
- */
-const DailyTypeCode = {
-  /** 평일 */
-  WEEKDAY: '01',
-  /** 토요일 */
-  SATURDAY: '02',
-  /** 일요일(공휴일) */
-  SUNDAY: '03',
-}
-
-/**
- * 상하행구분코드
- */
-const UpDownTypeCode = {
-  /** 상행 - 서울방향 */
-  UP: 'U',
-  /** 하행 - 서울반대방향 */
-  DOWN: 'D',
-}
+const { DataType } = require('./types/constants');
 
 const API_URL = 'http://apis.data.go.kr/1613000/SubwayInfoService';
 
@@ -61,8 +35,8 @@ async function getSubwayList(subwayStationName, pageNo = 1, numOfRows = 10) {
 /**
  * 지하철역별 시간표 목록조회
  * @param {string} subwayStationId *지하철역ID - 지하철역 목록조회에서 조회 가능
- * @param {string} dailyTypeCode *요일구분코드 - DataType
- * @param {string} upDownTypeCode *상하행구분코드 - UpDownTypeCode
+ * @param {string} dailyTypeCodeValue *요일구분코드값 - DataType
+ * @param {string} upDownTypeCodeValue *상하행구분코드값 - UpDownTypeCode
  * @param {integer} pageNo 한 페이지 결과 수
  * @param {integer} numOfRows 페이지 번호
  * @param {boolean} filterNonArrive 정차하지 않는 정보 필터링 여부
@@ -70,8 +44,8 @@ async function getSubwayList(subwayStationName, pageNo = 1, numOfRows = 10) {
  */
 async function getStationTimetable(
   subwayStationId,
-  dailyTypeCode,
-  upDownTypeCode,
+  dailyTypeCodeValue,
+  upDownTypeCodeValue,
   pageNo = 1,
   numOfRows = 10,
 ) {
@@ -79,8 +53,8 @@ async function getStationTimetable(
   let res = (await axios.get('/getSubwaySttnAcctoSchdulList', {
     params: {
       subwayStationId,
-      dailyTypeCode,
-      upDownTypeCode,
+      dailyTypeCode: dailyTypeCodeValue,
+      upDownTypeCode: upDownTypeCodeValue,
       pageNo,
       numOfRows,
     }
@@ -92,8 +66,4 @@ async function getStationTimetable(
 module.exports = {
   getSubwayList,
   getStationTimetable,
-  codes: {
-    DailyTypeCode,
-    UpDownTypeCode,
-  }
 }
