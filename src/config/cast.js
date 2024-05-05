@@ -18,7 +18,6 @@ const cast = (key, type, defaultValue) => {
         }
         throw new Error(`process.env.${key}에 적절한 값을 설정하지 않았습니다`)
     }
-    console.log('defaultValue', defaultValue);
     if (defaultValue !== undefined) {
         return defaultValue
     }

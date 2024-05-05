@@ -1,10 +1,8 @@
 const path = require('path');
 const dotenv = require('dotenv');
-console.log('__dirname', __dirname);
 dotenv.config({ path: path.join(__dirname, `.${process.env.NODE_ENV}.env`) });
 
 const packageJson = require('../../package.json');
-
 const { cast } = require('./cast');
 
 const defaultValue = {
