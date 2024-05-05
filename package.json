@@ -1,5 +1,5 @@
 {
-  "name": "seoul-subway-notion-db-sync-server",
+  "name": "k-subway-notion-sync-server",
   "version": "0.0.4",
   "private": true,
   "scripts": {
